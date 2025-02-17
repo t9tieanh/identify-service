@@ -1,5 +1,6 @@
 package com.phamtienanh.identify_service.dto.request;
 
+import com.phamtienanh.identify_service.enums.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -25,11 +26,4 @@ public class UserUpdateRequest {
 
     Set<String> roles;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

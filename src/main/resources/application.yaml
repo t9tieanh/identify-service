@@ -18,3 +18,9 @@ spring:
   jwt:
     signerKey: BvniRriiBDSsZEp8ZpkLqOnOuCfRhi+l8JVPmMzFim31u8SR2aYV1Nk0yvYSlIiy
 
+
+  logging:
+    level:
+      org.springframework.security: DEBUG
+
+

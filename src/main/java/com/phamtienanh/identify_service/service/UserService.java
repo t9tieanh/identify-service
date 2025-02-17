@@ -8,6 +8,7 @@ import com.phamtienanh.identify_service.enums.Role;
 import com.phamtienanh.identify_service.exception.AppRuntimeException;
 import com.phamtienanh.identify_service.exception.ErrorCode;
 import com.phamtienanh.identify_service.mapper.UserMapper;
+import com.phamtienanh.identify_service.repository.RoleRepository;
 import com.phamtienanh.identify_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class UserService {
 
     UserMapper userMapper;
 
+    RoleRepository roleRepository;
+
     public User createRequest (UserCreationRequest request) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -38,16 +41,19 @@ public class UserService {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        user.setRoles(roles);
+//        request.getRoles().forEach();
 
         return userRepository.save(user);
     }
 
     public UserResponse updateUser (UserUpdateRequest request) {
-        User user = userRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("user not found !"));
+        User user = userRepository.findById(request.getId()).orElseThrow(() -> new AppRuntimeException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(request,user);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

@@ -2,6 +2,7 @@ package com.phamtienanh.identify_service.exception;
 
 import com.phamtienanh.identify_service.dto.request.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,12 +11,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
-    ResponseEntity<ApiResponse> runtimeExceptionHandler(RuntimeException e) {
+    ResponseEntity<ApiResponse> runtimeExceptionHandler(Exception e) {
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXEPTION.getCode());
         apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXEPTION.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse> accessDeniedException (AccessDeniedException e) {
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(ErrorCode.UNAUTHORIZED.getCode());
+        apiResponse.setMessage(ErrorCode.UNAUTHORIZED.getMessage());
+
+        return ResponseEntity.status(ErrorCode.UNAUTHORIZED.getStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(value = AppRuntimeException.class)
@@ -26,7 +36,7 @@ public class GlobalExceptionHandler {
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
 
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler (value = MethodArgumentNotValidException.class)
@@ -37,7 +47,7 @@ public class GlobalExceptionHandler {
         try {
             errorCode = ErrorCode.valueOf(e.getFieldError().getDefaultMessage());
         } catch (IllegalArgumentException illegalArgumentException) {
-            e.printStackTrace();
+            illegalArgumentException.printStackTrace();
         }
 
         apiResponse.setCode(errorCode.getCode());
