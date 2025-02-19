@@ -23,4 +23,18 @@ spring:
     level:
       org.springframework.security: DEBUG
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+open:
+  api:
+    title: API Documentation
+    version: v1.1.0
+    description: API-Service
+    serverUrl: http://localhost:8080/identity/
+    serverName: Server Test
+
 

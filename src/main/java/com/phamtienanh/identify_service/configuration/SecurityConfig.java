@@ -44,6 +44,11 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll() // Cho phép truy cập mà không cần token
 //                        .requestMatchers(HttpMethod.GET, "/users").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated() // Các request khác cần token
